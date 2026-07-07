@@ -34,6 +34,8 @@ RUN bundle install && \
 
 # Copy application code
 COPY . .
+RUN chmod 755 bin/rails bin/bundle bin/docker-entrypoint && \
+    ls -l bin
 
 RUN ls -l ./bin && \
     file ./bin/rails && \
