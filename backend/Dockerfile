@@ -37,9 +37,7 @@ COPY . .
 RUN chmod 755 bin/rails bin/bundle bin/docker-entrypoint && \
     ls -l bin
 
-RUN ls -l ./bin && \
-    file ./bin/rails && \
-    chmod +x ./bin/rails ./bin/bundle ./bin/docker-entrypoint
+RUN chmod +x ./bin/rails ./bin/bundle ./bin/docker-entrypoint
 
 RUN bundle exec bootsnap precompile app/ lib/ && \
     SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
