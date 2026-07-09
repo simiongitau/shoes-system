@@ -34,7 +34,7 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat
 
 COPY package.json package-lock.json ./
-RUN --mount=type=cache,target=/root/.npm \
+RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
     npm ci --include=dev
 
 
@@ -67,9 +67,10 @@ ENV SENTRY_DSN=$SENTRY_DSN \
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN --mount=type=secret,id=sentry_auth_token,required=false \
-    SENTRY_AUTH_TOKEN="$(cat /run/secrets/sentry_auth_token 2>/dev/null || true)" \
-    npm run build
+
+ARG SENTRY_AUTH_TOKEN
+ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+RUN npm run build
 
 
 # ---- runner: minimal runtime image ----
