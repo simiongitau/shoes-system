@@ -34,8 +34,7 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat
 
 COPY package.json package-lock.json ./
-RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
-    npm ci --include=dev
+RUN npm ci
 
 
 # ---- builder: compile the Next.js app ----
