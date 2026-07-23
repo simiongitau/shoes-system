@@ -48,8 +48,10 @@ ENV NODE_ENV=production
 # that fetch from Spree (categories, products, etc.).
 ARG SPREE_API_URL
 ARG SPREE_PUBLISHABLE_KEY
+ARG NEXT_PUBLIC_SITE_URL
 ENV SPREE_API_URL=$SPREE_API_URL \
-    SPREE_PUBLISHABLE_KEY=$SPREE_PUBLISHABLE_KEY
+    SPREE_PUBLISHABLE_KEY=$SPREE_PUBLISHABLE_KEY \
+    NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 
 # Optional Sentry release/source-map upload. When SENTRY_DSN is empty,
 # next.config.ts skips withSentryConfig entirely, so the build still works.
