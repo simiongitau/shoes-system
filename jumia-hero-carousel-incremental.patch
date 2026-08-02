@@ -1,0 +1,219 @@
+diff --git a/apps/storefront/src/app/globals.css b/apps/storefront/src/app/globals.css
+index 21428af..9978384 100644
+--- a/apps/storefront/src/app/globals.css
++++ b/apps/storefront/src/app/globals.css
+@@ -136,6 +136,19 @@ input[type="search"]::-webkit-search-cancel-button {
+   display: none;
+ }
+ 
++/*
++ * Hero carousel pagination dots: white/translucent to stay legible over
++ * both the gradient fallback and real promo photos, with the active dot
++ * picking up the orange brand color for a clear focal point.
++ */
++.hero-carousel {
++  --swiper-pagination-color: var(--color-primary-500);
++  --swiper-pagination-bullet-inactive-color: #fff;
++  --swiper-pagination-bullet-inactive-opacity: 0.6;
++  --swiper-pagination-bullet-size: 10px;
++  --swiper-pagination-bottom: 16px;
++}
++
+ /*
+  * Skip rendering of featured products section on mobile where it's
+  * below the fold (hero min-h-[823px]). Frees main thread for hero LCP.
+diff --git a/apps/storefront/src/components/home/HeroCarousel.tsx b/apps/storefront/src/components/home/HeroCarousel.tsx
+new file mode 100644
+index 0000000..0c0bd2a
+--- /dev/null
++++ b/apps/storefront/src/components/home/HeroCarousel.tsx
+@@ -0,0 +1,90 @@
++"use client";
++
++import Link from "next/link";
++import { Autoplay, Pagination } from "swiper/modules";
++import { Swiper as SwiperComponent, SwiperSlide } from "swiper/react";
++import "swiper/css";
++import "swiper/css/pagination";
++import type { ReactElement } from "react";
++import { Button } from "@/components/ui/button";
++
++export interface HeroSlide {
++  id: string;
++  /** Tailwind gradient classes, used when no background image is supplied. */
++  gradientClassName: string;
++  eyebrow: string;
++  title: string;
++  subtitle: string;
++  ctaLabel: string;
++  ctaHref: string;
++  /** Optional real promo image (e.g. uploaded via CMS later). Falls back to the gradient above. */
++  imageUrl?: string;
++}
++
++interface HeroCarouselProps {
++  slides: HeroSlide[];
++}
++
++/**
++ * Rotating promo-banner carousel for the homepage, in the style of
++ * Jumia / Beauty Kenya seasonal-sale hero sections. Autoplays with
++ * pagination dots; pauses on hover/interaction via Swiper defaults.
++ */
++export function HeroCarousel({ slides }: HeroCarouselProps): ReactElement {
++  if (slides.length === 0) {
++    return <></>;
++  }
++
++  return (
++    <section className="border-b border-gray-200">
++      <SwiperComponent
++        modules={[Autoplay, Pagination]}
++        autoplay={{ delay: 5000, disableOnInteraction: false }}
++        pagination={{ clickable: true }}
++        loop={slides.length > 1}
++        className="hero-carousel"
++      >
++        {slides.map((slide) => (
++          <SwiperSlide key={slide.id}>
++            <div
++              className={`relative flex items-center min-h-[420px] md:min-h-[480px] ${
++                slide.imageUrl ? "" : slide.gradientClassName
++              }`}
++              style={
++                slide.imageUrl
++                  ? {
++                      backgroundImage: `url(${slide.imageUrl})`,
++                      backgroundSize: "cover",
++                      backgroundPosition: "center",
++                    }
++                  : undefined
++              }
++            >
++              {/* Dark overlay improves text legibility over photos; harmless over gradients too */}
++              <div className="absolute inset-0 bg-black/20" />
++
++              <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-12">
++                <div className="max-w-xl text-white">
++                  <span className="inline-block text-sm font-semibold tracking-wide uppercase bg-white/15 px-3 py-1 rounded-full mb-4">
++                    {slide.eyebrow}
++                  </span>
++                  <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-balance">
++                    {slide.title}
++                  </h1>
++                  <p className="mt-4 text-base md:text-lg text-white/90 max-w-md">
++                    {slide.subtitle}
++                  </p>
++                  <div className="mt-8">
++                    <Button size="lg" asChild>
++                      <Link href={slide.ctaHref}>{slide.ctaLabel}</Link>
++                    </Button>
++                  </div>
++                </div>
++              </div>
++            </div>
++          </SwiperSlide>
++        ))}
++      </SwiperComponent>
++    </section>
++  );
++}
+diff --git a/apps/storefront/src/components/home/HeroSection.tsx b/apps/storefront/src/components/home/HeroSection.tsx
+index 0c0adc2..6c16ff3 100644
+--- a/apps/storefront/src/components/home/HeroSection.tsx
++++ b/apps/storefront/src/components/home/HeroSection.tsx
+@@ -1,6 +1,5 @@
+-import Link from "next/link";
+ import { getTranslations } from "next-intl/server";
+-import { Button } from "@/components/ui/button";
++import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
+ import { getStoreName } from "@/lib/store";
+ 
+ interface HeroSectionProps {
+@@ -14,47 +13,45 @@ export async function HeroSection({ basePath, locale }: HeroSectionProps) {
+     namespace: "home",
+   });
+   const storeName = getStoreName();
++  const shopNow = t("shopNow");
+ 
+-  /* Demo-only: Remove for production. */
+-  const githubUrl = "https://github.com/spree/storefront";
+-  const quickstartUrl =
+-    "http://wa.me/qr/F7XBUE3WKBT2J1";
++  /**
++   * Rotating promo banners, Jumia/Beauty-Kenya style. Swap `imageUrl` for a
++   * real promo photo per campaign; the gradient is just a safe fallback so
++   * this renders correctly before real creative assets exist.
++   */
++  const slides: HeroSlide[] = [
++    {
++      id: "big-sale",
++      gradientClassName: "bg-gradient-to-br from-primary-600 to-primary-800",
++      eyebrow: "Limited time",
++      title: `Big Sale at ${storeName}`,
++      subtitle:
++        "Up to 40% off sneakers, formal shoes, and everyday wear — while stocks last.",
++      ctaLabel: shopNow,
++      ctaHref: `${basePath}/products?sale=true`,
++    },
++    {
++      id: "new-arrivals",
++      gradientClassName: "bg-gradient-to-br from-gray-900 to-gray-700",
++      eyebrow: "Just dropped",
++      title: "New Arrivals for Every Occasion",
++      subtitle:
++        "Trendy sneakers, elegant formal shoes, and reliable school shoes — freshly stocked.",
++      ctaLabel: shopNow,
++      ctaHref: `${basePath}/products`,
++    },
++    {
++      id: "free-shipping",
++      gradientClassName: "bg-gradient-to-br from-primary-700 to-gray-900",
++      eyebrow: "Nationwide delivery",
++      title: "Fast Delivery Across Kenya",
++      subtitle:
++        "Order today and get your shoes delivered straight to your doorstep.",
++      ctaLabel: shopNow,
++      ctaHref: `${basePath}/products`,
++    },
++  ];
+ 
+-  return (
+-    <section className="border-b border-gray-200 min-h-[823px] md:min-h-0 flex items-center">
+-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-24">
+-        <div className="text-center">
+-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
+-            {t("welcome", { storeName })}
+-          </h1>
+-          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+-            At Africa shoes Art, we believe every step matters. That's why we offer high-quality shoes that 
+-            combine style, comfort, and durability for every occasion. Whether you're looking for trendy sneakers,
+-             elegant formal shoes, reliable school shoes, or everyday casual wear, we have the perfect pair for you.
+-            team
+-          </p>
+-          <div className="mt-8 flex justify-center gap-4 flex-wrap">
+-            <Button size="lg" asChild>
+-              <Link href={`${basePath}/products`}>{t("shopNow")}</Link>
+-            </Button>
+-            {/* Demo-only: Remove for production. */}
+-            <Button variant="outline" size="lg" asChild>
+-              <Link href={githubUrl} target="_blank" rel="noopener noreferrer">
+-               Twitter
+-              </Link>
+-            </Button>
+-            <Button variant="outline" size="lg" asChild>
+-              <Link
+-                href={quickstartUrl}
+-                target="_blank"
+-                rel="noopener noreferrer"
+-              >
+-                WhatsApp
+-              </Link>
+-            </Button>
+-          </div>
+-        </div>
+-      </div>
+-    </section>
+-  );
++  return <HeroCarousel slides={slides} />;
+ }

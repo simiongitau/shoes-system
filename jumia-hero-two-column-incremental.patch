@@ -1,0 +1,240 @@
+diff --git a/apps/storefront/src/app/[country]/[locale]/(storefront)/page.tsx b/apps/storefront/src/app/[country]/[locale]/(storefront)/page.tsx
+index a5bc245..ccae87f 100644
+--- a/apps/storefront/src/app/[country]/[locale]/(storefront)/page.tsx
++++ b/apps/storefront/src/app/[country]/[locale]/(storefront)/page.tsx
+@@ -75,7 +75,7 @@ export default async function HomePage({ params }: HomePageProps) {
+ 
+   return (
+     <div>
+-      <HeroSection basePath={basePath} locale={locale} />
++      <HeroSection basePath={basePath} locale={locale} country={country} />
+       <FeaturedProductsSection
+         basePath={basePath}
+         locale={locale}
+diff --git a/apps/storefront/src/components/home/HeroCarousel.tsx b/apps/storefront/src/components/home/HeroCarousel.tsx
+index 0c0bd2a..afc6007 100644
+--- a/apps/storefront/src/components/home/HeroCarousel.tsx
++++ b/apps/storefront/src/components/home/HeroCarousel.tsx
+@@ -1,5 +1,6 @@
+ "use client";
+ 
++import Image from "next/image";
+ import Link from "next/link";
+ import { Autoplay, Pagination } from "swiper/modules";
+ import { Swiper as SwiperComponent, SwiperSlide } from "swiper/react";
+@@ -10,15 +11,19 @@ import { Button } from "@/components/ui/button";
+ 
+ export interface HeroSlide {
+   id: string;
+-  /** Tailwind gradient classes, used when no background image is supplied. */
++  /** Tailwind gradient classes used as the slide background. */
+   gradientClassName: string;
+   eyebrow: string;
+   title: string;
+   subtitle: string;
+   ctaLabel: string;
+   ctaHref: string;
+-  /** Optional real promo image (e.g. uploaded via CMS later). Falls back to the gradient above. */
+-  imageUrl?: string;
++  /** Featured product shown in the dedicated image panel on the right. */
++  product?: {
++    name: string;
++    imageUrl: string;
++    href: string;
++  };
+ }
+ 
+ interface HeroCarouselProps {
+@@ -27,8 +32,9 @@ interface HeroCarouselProps {
+ 
+ /**
+  * Rotating promo-banner carousel for the homepage, in the style of
+- * Jumia / Beauty Kenya seasonal-sale hero sections. Autoplays with
+- * pagination dots; pauses on hover/interaction via Swiper defaults.
++ * Jumia / Beauty Kenya seasonal-sale hero sections: text + CTA on the
++ * left, a dedicated product image panel on the right. Autoplays with
++ * pagination dots.
+  */
+ export function HeroCarousel({ slides }: HeroCarouselProps): ReactElement {
+   if (slides.length === 0) {
+@@ -47,38 +53,46 @@ export function HeroCarousel({ slides }: HeroCarouselProps): ReactElement {
+         {slides.map((slide) => (
+           <SwiperSlide key={slide.id}>
+             <div
+-              className={`relative flex items-center min-h-[420px] md:min-h-[480px] ${
+-                slide.imageUrl ? "" : slide.gradientClassName
+-              }`}
+-              style={
+-                slide.imageUrl
+-                  ? {
+-                      backgroundImage: `url(${slide.imageUrl})`,
+-                      backgroundSize: "cover",
+-                      backgroundPosition: "center",
+-                    }
+-                  : undefined
+-              }
++              className={`relative flex items-center min-h-[420px] md:min-h-[480px] ${slide.gradientClassName}`}
+             >
+-              {/* Dark overlay improves text legibility over photos; harmless over gradients too */}
+-              <div className="absolute inset-0 bg-black/20" />
+-
+               <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+-                <div className="max-w-xl text-white">
+-                  <span className="inline-block text-sm font-semibold tracking-wide uppercase bg-white/15 px-3 py-1 rounded-full mb-4">
+-                    {slide.eyebrow}
+-                  </span>
+-                  <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-balance">
+-                    {slide.title}
+-                  </h1>
+-                  <p className="mt-4 text-base md:text-lg text-white/90 max-w-md">
+-                    {slide.subtitle}
+-                  </p>
+-                  <div className="mt-8">
+-                    <Button size="lg" asChild>
+-                      <Link href={slide.ctaHref}>{slide.ctaLabel}</Link>
+-                    </Button>
++                <div className="grid md:grid-cols-2 items-center gap-8">
++                  {/* Left: copy + CTA */}
++                  <div className="text-white text-center md:text-left">
++                    <span className="inline-block text-sm font-semibold tracking-wide uppercase bg-white/15 px-3 py-1 rounded-full mb-4">
++                      {slide.eyebrow}
++                    </span>
++                    <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-balance">
++                      {slide.title}
++                    </h1>
++                    <p className="mt-4 text-base md:text-lg text-white/90 max-w-md mx-auto md:mx-0">
++                      {slide.subtitle}
++                    </p>
++                    <div className="mt-8">
++                      <Button size="lg" asChild>
++                        <Link href={slide.ctaHref}>{slide.ctaLabel}</Link>
++                      </Button>
++                    </div>
+                   </div>
++
++                  {/* Right: dedicated product image panel */}
++                  {slide.product && (
++                    <Link
++                      href={slide.product.href}
++                      className="hidden md:flex items-center justify-center"
++                      aria-label={slide.product.name}
++                    >
++                      <div className="relative w-full max-w-sm aspect-square bg-white/95 rounded-2xl shadow-xl p-6">
++                        <Image
++                          src={slide.product.imageUrl}
++                          alt={slide.product.name}
++                          fill
++                          className="object-contain p-6"
++                          sizes="(min-width: 768px) 384px, 0px"
++                        />
++                      </div>
++                    </Link>
++                  )}
+                 </div>
+               </div>
+             </div>
+diff --git a/apps/storefront/src/components/home/HeroSection.tsx b/apps/storefront/src/components/home/HeroSection.tsx
+index 6c16ff3..cd0e3e5 100644
+--- a/apps/storefront/src/components/home/HeroSection.tsx
++++ b/apps/storefront/src/components/home/HeroSection.tsx
+@@ -1,13 +1,21 @@
+ import { getTranslations } from "next-intl/server";
+ import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
++import { PRODUCT_CARD_FIELDS } from "@/lib/data/cached";
++import { cachedListProducts } from "@/lib/data/products";
++import { getAccessToken } from "@/lib/spree";
+ import { getStoreName } from "@/lib/store";
+ 
+ interface HeroSectionProps {
+   basePath: string;
+   locale: string;
++  country: string;
+ }
+ 
+-export async function HeroSection({ basePath, locale }: HeroSectionProps) {
++export async function HeroSection({
++  basePath,
++  locale,
++  country,
++}: HeroSectionProps) {
+   const t = await getTranslations({
+     locale: locale as Locale,
+     namespace: "home",
+@@ -16,11 +24,36 @@ export async function HeroSection({ basePath, locale }: HeroSectionProps) {
+   const shopNow = t("shopNow");
+ 
+   /**
+-   * Rotating promo banners, Jumia/Beauty-Kenya style. Swap `imageUrl` for a
+-   * real promo photo per campaign; the gradient is just a safe fallback so
+-   * this renders correctly before real creative assets exist.
++   * Pull a handful of real products to feature one per slide. Falls back
++   * gracefully (no product image, text-only slide) if the store has no
++   * products yet or the fetch fails.
+    */
+-  const slides: HeroSlide[] = [
++  const userToken = await getAccessToken();
++  let featured: Array<{ name: string; imageUrl: string; href: string }> = [];
++  try {
++    const { data } = await cachedListProducts(
++      { limit: 3, fields: PRODUCT_CARD_FIELDS },
++      { locale, country },
++      userToken,
++    );
++    featured = (data ?? [])
++      .filter((p) => Boolean(p.thumbnail_url))
++      .map((p) => ({
++        name: p.name,
++        imageUrl: p.thumbnail_url as string,
++        href: `${basePath}/products/${p.slug}`,
++      }));
++  } catch {
++    featured = [];
++  }
++
++  /**
++   * Rotating promo banners, Jumia/Beauty-Kenya style: text + CTA on the
++   * left, a themed product photo on the right. Each slide pulls a
++   * different product (cycling through what's available) so the visual
++   * matches the slide's campaign.
++   */
++  const slideDefs = [
+     {
+       id: "big-sale",
+       gradientClassName: "bg-gradient-to-br from-primary-600 to-primary-800",
+@@ -28,7 +61,6 @@ export async function HeroSection({ basePath, locale }: HeroSectionProps) {
+       title: `Big Sale at ${storeName}`,
+       subtitle:
+         "Up to 40% off sneakers, formal shoes, and everyday wear — while stocks last.",
+-      ctaLabel: shopNow,
+       ctaHref: `${basePath}/products?sale=true`,
+     },
+     {
+@@ -38,7 +70,6 @@ export async function HeroSection({ basePath, locale }: HeroSectionProps) {
+       title: "New Arrivals for Every Occasion",
+       subtitle:
+         "Trendy sneakers, elegant formal shoes, and reliable school shoes — freshly stocked.",
+-      ctaLabel: shopNow,
+       ctaHref: `${basePath}/products`,
+     },
+     {
+@@ -48,10 +79,19 @@ export async function HeroSection({ basePath, locale }: HeroSectionProps) {
+       title: "Fast Delivery Across Kenya",
+       subtitle:
+         "Order today and get your shoes delivered straight to your doorstep.",
+-      ctaLabel: shopNow,
+       ctaHref: `${basePath}/products`,
+     },
+   ];
+ 
++  const slides: HeroSlide[] = slideDefs.map((def, index) => {
++    const product =
++      featured.length > 0 ? featured[index % featured.length] : undefined;
++    return {
++      ...def,
++      ctaLabel: shopNow,
++      product,
++    };
++  });
++
+   return <HeroCarousel slides={slides} />;
+ }
