@@ -37,7 +37,9 @@
     "viewAllCategory": "Voir tout dans {category}",
     "openSearch": "Ouvrir la recherche",
     "closeSearch": "Fermer la recherche",
-    "myAccount": "Mon compte"
+    "myAccount": "Mon compte",
+    "allCategories": "Toutes les catégories",
+    "saleProducts": "Promotions"
   },
   "footer": {
     "description": "E-commerce open source basé sur Spree REST API, TypeScript SDK et Next.js. Auto-hébergé. Vos données. Zéro frais de plateforme.",

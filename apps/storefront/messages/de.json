@@ -37,7 +37,9 @@
     "viewAllCategory": "Alle {category} anzeigen",
     "openSearch": "Suche öffnen",
     "closeSearch": "Suche schließen",
-    "myAccount": "Mein Konto"
+    "myAccount": "Mein Konto",
+    "allCategories": "Alle Kategorien",
+    "saleProducts": "Sale"
   },
   "footer": {
     "description": "Open-Source-E-Commerce basierend auf Spree REST API, TypeScript SDK und Next.js. Selbst hosten. Eigene Daten. Keine Plattformgebühren.",

@@ -29,14 +29,14 @@ export async function Footer({
   const tp = await getTranslations({ locale, namespace: "policies" });
 
   return (
-    <footer className="bg-primary text-gray-300">
+    <footer className="bg-primary text-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
           {/* Demo-only: Remove for production. */}
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <span className="text-xl font-bold text-white">{storeName}</span>
-            <p className="mt-4 text-sm text-neutral-400">
+            <span className="text-xl font-bold text-neutral-700 ">{storeName}</span>
+            <p className="mt-4 text-sm text-neutral-700">
               {t("description") || storeDescription}
             </p>
             {/* Demo-only: Remove for production. */}
@@ -45,7 +45,7 @@ export async function Footer({
                 href={githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-white hover:text-neutral-200 transition-colors font-medium"
+                className="text-sm text-neutral-700 hover:text-neutral-200 transition-colors font-medium"
               >
                 {t("forkOnGithub")} &rarr;
               </Link>
@@ -53,7 +53,7 @@ export async function Footer({
                 href={quickstartUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+                className="text-sm text-neutral-700 hover:text-neutral-200 transition-colors"
               >
                 {t("quickstartGuide")}
               </Link>
@@ -61,7 +61,7 @@ export async function Footer({
                 href={learnMoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+                className="text-sm text-neutral-700 hover:text-neutral-200 transition-colors"
               >
                 {t("learnMore")}
               </Link>
@@ -70,14 +70,14 @@ export async function Footer({
 
           {/* Links */}
           <div>
-            <h3 className="text-sm font-medium text-neutral-300">
+            <h3 className="text-sm font-medium text-neutral-700">
               {t("shop")}
             </h3>
             <ul className="mt-4 space-y-3">
               <li>
                 <Link
                   href={`${basePath}/products`}
-                  className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+                  className="text-sm text-neutral-700 hover:text-neutral-200 transition-colors"
                 >
                   {t("allProducts")}
                 </Link>
@@ -86,7 +86,7 @@ export async function Footer({
                 <li key={category.id}>
                   <Link
                     href={`${basePath}/c/${category.permalink}`}
-                    className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+                    className="text-sm text-neutral-700 hover:text-neutral-800 transition-colors"
                   >
                     {category.name}
                   </Link>
@@ -97,14 +97,14 @@ export async function Footer({
 
           {/* Account */}
           <div>
-            <h3 className="text-sm font-medium text-neutral-300">
+            <h3 className="text-sm font-medium text-neutral-700">
               {t("account")}
             </h3>
             <ul className="mt-4 space-y-3">
               <li>
                 <Link
                   href={`${basePath}/account`}
-                  className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+                  className="text-sm text-neutral-700 hover:text-neutral-200 transition-colors"
                 >
                   {t("myAccount")}
                 </Link>
@@ -112,7 +112,7 @@ export async function Footer({
               <li>
                 <Link
                   href={`${basePath}/account/orders`}
-                  className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+                  className="text-sm text-neutral-700 hover:text-neutral-200 transition-colors"
                 >
                   {t("orderHistory")}
                 </Link>
@@ -120,7 +120,7 @@ export async function Footer({
               <li>
                 <Link
                   href={`${basePath}/cart`}
-                  className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+                  className="text-sm text-neutral-700 hover:text-neutral-200 transition-colors"
                 >
                   {t("cart")}
                 </Link>
@@ -130,7 +130,7 @@ export async function Footer({
 
           {/* Policies */}
           <div>
-            <h3 className="text-sm font-medium text-neutral-300">
+            <h3 className="text-sm font-medium text-neutral-800">
               {t("policies")}
             </h3>
             <ul className="mt-4 space-y-3">
@@ -138,7 +138,7 @@ export async function Footer({
                 <li key={policy.slug}>
                   <Link
                     href={`${basePath}/policies/${policy.slug}`}
-                    className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+                    className="text-sm text-neutral-800 hover:text-neutral-200 transition-colors"
                   >
                     {tp(policy.nameKey)}
                   </Link>
@@ -148,13 +148,13 @@ export async function Footer({
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-neutral-800 text-xs text-neutral-400 text-center">
+        <div className="mt-8 pt-8 border-t border-neutral-800 text-xs text-neutral-800 text-center">
           <p>
             &copy; <CurrentYear /> {storeName}. {t("poweredBy")}{" "}
             <Link
               href="https://spreecommerce.org"
               target="_blank"
-              className="text-neutral-400 hover:text-neutral-200 underline transition-colors"
+              className="text-neutral-800 hover:text-neutral-200 underline transition-colors"
             >
               Spree Commerce
             </Link>{" "}

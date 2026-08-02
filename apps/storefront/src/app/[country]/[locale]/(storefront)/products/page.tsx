@@ -42,7 +42,11 @@ export default async function ProductsPage({
   const listName = query ? "Search Results" : "All Products";
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8"
+    style={{
+    background:
+      "linear-gradient(180deg, #FFF1E3 0px, #FBF8F5 140px, #FBF8F5 100%)",
+  }} >
       <div className="mb-8">
         {query ? (
           <h1 className="text-3xl font-bold text-gray-900">

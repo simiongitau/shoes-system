@@ -75,7 +75,7 @@ export default async function HomePage({ params }: HomePageProps) {
 
   return (
     <div>
-      <HeroSection basePath={basePath} locale={locale} />
+      <HeroSection basePath={basePath} locale={locale} country={country} />
       <FeaturedProductsSection
         basePath={basePath}
         locale={locale}

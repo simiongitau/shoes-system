@@ -1,5 +1,6 @@
 import type { Category } from "@spree/sdk";
 import Link from "next/link";
+import { CategoryNav } from "@/components/layout/CategoryNav";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { getCategories } from "@/lib/data/categories";
@@ -52,6 +53,11 @@ export default async function StorefrontLayout({
   return (
     <>
       <Header
+        rootCategories={rootCategories}
+        basePath={basePath}
+        locale={locale as Locale}
+      />
+      <CategoryNav
         rootCategories={rootCategories}
         basePath={basePath}
         locale={locale as Locale}

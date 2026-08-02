@@ -37,7 +37,9 @@
     "viewAllCategory": "Ver todo en {category}",
     "openSearch": "Abrir busqueda",
     "closeSearch": "Cerrar busqueda",
-    "myAccount": "Mi cuenta"
+    "myAccount": "Mi cuenta",
+    "allCategories": "Todas las categorías",
+    "saleProducts": "Ofertas"
   },
   "footer": {
     "description": "Comercio electrónico de código abierto basado en Spree REST API, TypeScript SDK y Next.js. Alójalo tú mismo. Tus datos. Sin comisiones de plataforma.",

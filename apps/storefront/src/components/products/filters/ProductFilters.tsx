@@ -151,7 +151,7 @@ export const FilterBar = memo(function FilterBar({
 
   return (
     <div className="mb-6">
-      <div className="hidden md:flex items-center justify-between pb-4 border-b border-gray-100">
+      <div className="hidden md:flex items-center justify-between pb-4 border-b border-gray-800">
         <div className="flex items-center gap-3">
           {optionFilters.map((filter) => (
             <FilterDropdown

@@ -17,17 +17,17 @@
   --animate-hamburger-bottom-open: hamburger-bottom-open 0.35s ease-in-out forwards;
   --animate-hamburger-bottom-close: hamburger-bottom-close 0.35s ease-in-out forwards;
 
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #0077ff;
-  --color-primary-600: #0066dd;
-  --color-primary-700: #0055bb;
-  --color-primary-800: #004499;
-  --color-primary-900: #003377;
-  --color-primary-950: #001d4d;
+  --color-primary-50: #fff7ed;
+  --color-primary-100: #ffedd5;
+  --color-primary-200: #fed7aa;
+  --color-primary-300: #fdba74;
+  --color-primary-400: #fb923c;
+  --color-primary-500: #f97316;
+  --color-primary-600: #ea6a12;
+  --color-primary-700: #c2570e;
+  --color-primary-800: #9a460c;
+  --color-primary-900: #7c380a;
+  --color-primary-950: #431c04;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -137,6 +137,19 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 /*
+ * Hero carousel pagination dots: white/translucent to stay legible over
+ * both the gradient fallback and real promo photos, with the active dot
+ * picking up the orange brand color for a clear focal point.
+ */
+.hero-carousel {
+  --swiper-pagination-color: var(--color-primary-500);
+  --swiper-pagination-bullet-inactive-color: #fff;
+  --swiper-pagination-bullet-inactive-opacity: 0.6;
+  --swiper-pagination-bullet-size: 10px;
+  --swiper-pagination-bottom: 16px;
+}
+
+/*
  * Skip rendering of featured products section on mobile where it's
  * below the fold (hero min-h-[823px]). Frees main thread for hero LCP.
  * Disabled on desktop (md+) where products are in viewport.
@@ -183,7 +196,7 @@ input[type="search"]::-webkit-search-cancel-button {
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: #ea6a12;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -218,7 +231,7 @@ input[type="search"]::-webkit-search-cancel-button {
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.87 0 0);
+  --primary: #fb923c;
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
